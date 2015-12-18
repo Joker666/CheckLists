@@ -11,6 +11,7 @@ import UIKit
 class CheckListViewController: UITableViewController, ItemDetailViewControllerDelegate {
 
     var items : [CheckListItem]
+    var checkList: CheckList!
 
     required init? (coder aDecoder: NSCoder) {
         items = [CheckListItem]()
@@ -33,6 +34,7 @@ class CheckListViewController: UITableViewController, ItemDetailViewControllerDe
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = checkList.name
         // Do any additional setup after loading the view, typically from a nib.
     }
 
