@@ -17,15 +17,19 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
         super.init(coder: aDecoder)
         
         var list = CheckList(name: "Birthdays")
+        list.id = 0
         lists.append(list)
         
         list = CheckList(name: "Groceries")
+        list.id = 1
         lists.append(list)
         
         list = CheckList(name: "Cool Apps")
+        list.id = 2
         lists.append(list)
         
         list = CheckList(name: "To Do")
+        list.id = 3
         lists.append(list)
     }
     
@@ -93,6 +97,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     
     func listDetailViewController(controller: ListDetailViewController, didFinishAddingCheckList checkList: CheckList) {
         let newRowIndex = lists.count
+        checkList.id = newRowIndex
         lists.append(checkList)
         
         let indexPath = NSIndexPath(forRow: newRowIndex, inSection: 0)
@@ -119,6 +124,12 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     }
     
     func listDetailViewController(controller: ListDetailViewController, didFinishEditingCheckList checkList: CheckList) {
-        
+        if let index = lists.indexOf({$0.id == checkList.id}) {
+            let indexPath = NSIndexPath(forRow: index, inSection: 0)
+            if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+                cell.textLabel!.text = checkList.name
+            }
+        }
+        dismissViewControllerAnimated(true, completion: nil)
     }
 }

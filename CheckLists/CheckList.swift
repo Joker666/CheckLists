@@ -10,6 +10,7 @@ import Foundation
 
 class CheckList: NSObject {
     var name = ""
+    var id = 0
     
     init(name: String) {
         self.name = name

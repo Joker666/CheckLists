@@ -98,6 +98,7 @@ class CheckListViewController: UITableViewController, ItemDetailViewControllerDe
     
     func itemDetailViewController(controller: ItemDetailViewController, didFinishAddingItem item: CheckListItem) {
         let newRowIndex = items.count
+        item.id = newRowIndex
         items.append(item)
         let indexPath = NSIndexPath(forRow: newRowIndex, inSection: 0)
         tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
