@@ -8,15 +8,9 @@
 
 import UIKit
 
-class AllListsViewController: UITableViewController, ListDetailViewControllerDelegate {
+class AllListsViewController: UITableViewController, ListDetailViewControllerDelegate, UINavigationControllerDelegate {
     
-    var lists : [CheckList]
-    
-    required init?(coder aDecoder: NSCoder) {
-        lists = [CheckList]()
-        super.init(coder: aDecoder)
-        loadChecklists()
-    }
+    var dataModel: DataModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,18 +20,31 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        navigationController?.delegate = self
+        let index = NSUserDefaults.standardUserDefaults().integerForKey("CheckListIndex")
+        if index != -1 {
+            let checkList = dataModel.lists[index]
+            performSegueWithIdentifier("ShowCheckList", sender: checkList)
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        if viewController === self {
+            NSUserDefaults.standardUserDefaults().setInteger(-1, forKey: "CheckListIndex")
+        }
+    }
 
     // MARK: - Table view data source
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return lists.count
+        return dataModel.lists.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -49,7 +56,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellidentifier)
         }
         
-        let checkList = lists[indexPath.row]
+        let checkList = dataModel.lists[indexPath.row]
         cell.textLabel!.text = checkList.name
         cell.accessoryType = .DetailDisclosureButton
 
@@ -58,7 +65,10 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        let checkList = lists[indexPath.row]
+        
+        NSUserDefaults.standardUserDefaults().setInteger(indexPath.row, forKey: "CheckListIndex")
+        
+        let checkList = dataModel.lists[indexPath.row]
         performSegueWithIdentifier("ShowCheckList", sender: checkList)
     }
     
@@ -81,9 +91,9 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     }
     
     func listDetailViewController(controller: ListDetailViewController, didFinishAddingCheckList checkList: CheckList) {
-        let newRowIndex = lists.count
+        let newRowIndex = dataModel.lists.count
         checkList.id = Int32(newRowIndex)
-        lists.append(checkList)
+        dataModel.lists.append(checkList)
         
         let indexPath = NSIndexPath(forRow: newRowIndex, inSection: 0)
         tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
@@ -92,7 +102,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     }
     
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        lists.removeAtIndex(indexPath.row)
+        dataModel.lists.removeAtIndex(indexPath.row)
         
         tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     }
@@ -103,47 +113,19 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
         let controller = navigationController.topViewController as! ListDetailViewController
         
         controller.delegate = self
-        let checkList = lists[indexPath.row]
+        let checkList = dataModel.lists[indexPath.row]
         controller.checkListToEdit = checkList
         presentViewController(navigationController, animated: true, completion: nil)
     }
     
     func listDetailViewController(controller: ListDetailViewController, didFinishEditingCheckList checkList: CheckList) {
-        if let index = lists.indexOf({$0.id == checkList.id}) {
+        if let index = dataModel.lists.indexOf({$0.id == checkList.id}) {
             let indexPath = NSIndexPath(forRow: index, inSection: 0)
             if let cell = tableView.cellForRowAtIndexPath(indexPath) {
                 cell.textLabel!.text = checkList.name
             }
         }
         dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func documentsDirectory() -> String {
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as [String]
-        return paths[0]
-    }
-    
-    func dataFilePath() -> String {
-        return documentsDirectory().NS.stringByAppendingPathComponent( "Checklists.plist")
-    }
-    
-    func saveChecklists() {
-        let data = NSMutableData()
-        let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
-        archiver.encodeObject(lists, forKey: "Checklists")
-        archiver.finishEncoding()
-        data.writeToFile(dataFilePath(), atomically: true)
-    }
-    
-    func loadChecklists() {
-        let path = dataFilePath()
-        if NSFileManager.defaultManager().fileExistsAtPath(path) {
-            if let data = NSData(contentsOfFile: path) {
-                let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
-                lists = unarchiver.decodeObjectForKey("Checklists") as! [CheckList]
-                unarchiver.finishDecoding()
-            }
-        }
     }
 }
 
