@@ -8,12 +8,27 @@
 
 import Foundation
 
-class CheckList: NSObject {
+class CheckList: NSObject, NSCoding {
     var name = ""
-    var id = 0
+    var id : Int32 = 0
+    var items = [CheckListItem]()
     
     init(name: String) {
         self.name = name
         super.init()
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        name = aDecoder.decodeObjectForKey("Name") as! String
+        items = aDecoder.decodeObjectForKey("Items") as! [CheckListItem]
+        self.id = aDecoder.decodeInt32ForKey("Id")
+        
+        super.init()
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(name, forKey: "Name")
+        aCoder.encodeInt32(self.id, forKey: "Id")
+        aCoder.encodeObject(items, forKey: "Items")
     }
 }

@@ -6,7 +6,7 @@
 import Foundation
 
 class CheckListItem : NSObject, NSCoding {
-    var id = 0
+    var id : Int32 = 0
     var text = ""
     var checked = false
 
@@ -16,12 +16,14 @@ class CheckListItem : NSObject, NSCoding {
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(text, forKey: "Text")
+        aCoder.encodeInt32(self.id, forKey: "Id")
         aCoder.encodeBool(checked, forKey: "Checked")
     }
     
     required init(coder aDecoder: NSCoder) {
         text = aDecoder.decodeObjectForKey("Text") as! String
         checked = aDecoder.decodeBoolForKey("Checked")
+        self.id = aDecoder.decodeInt32ForKey("Id")
         super.init()
     }
     

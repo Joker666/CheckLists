@@ -15,22 +15,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     required init?(coder aDecoder: NSCoder) {
         lists = [CheckList]()
         super.init(coder: aDecoder)
-        
-        var list = CheckList(name: "Birthdays")
-        list.id = 0
-        lists.append(list)
-        
-        list = CheckList(name: "Groceries")
-        list.id = 1
-        lists.append(list)
-        
-        list = CheckList(name: "Cool Apps")
-        list.id = 2
-        lists.append(list)
-        
-        list = CheckList(name: "To Do")
-        list.id = 3
-        lists.append(list)
+        loadChecklists()
     }
     
     override func viewDidLoad() {
@@ -97,7 +82,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     
     func listDetailViewController(controller: ListDetailViewController, didFinishAddingCheckList checkList: CheckList) {
         let newRowIndex = lists.count
-        checkList.id = newRowIndex
+        checkList.id = Int32(newRowIndex)
         lists.append(checkList)
         
         let indexPath = NSIndexPath(forRow: newRowIndex, inSection: 0)
@@ -132,4 +117,37 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
         }
         dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    func documentsDirectory() -> String {
+        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as [String]
+        return paths[0]
+    }
+    
+    func dataFilePath() -> String {
+        return documentsDirectory().NS.stringByAppendingPathComponent( "Checklists.plist")
+    }
+    
+    func saveChecklists() {
+        let data = NSMutableData()
+        let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
+        archiver.encodeObject(lists, forKey: "Checklists")
+        archiver.finishEncoding()
+        data.writeToFile(dataFilePath(), atomically: true)
+    }
+    
+    func loadChecklists() {
+        let path = dataFilePath()
+        if NSFileManager.defaultManager().fileExistsAtPath(path) {
+            if let data = NSData(contentsOfFile: path) {
+                let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
+                lists = unarchiver.decodeObjectForKey("Checklists") as! [CheckList]
+                unarchiver.finishDecoding()
+            }
+        }
+    }
+}
+
+
+public extension String {
+    var NS: NSString { return (self as NSString) }
 }
