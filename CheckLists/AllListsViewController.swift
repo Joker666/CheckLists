@@ -22,8 +22,8 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
         navigationController?.delegate = self
-        let index = NSUserDefaults.standardUserDefaults().integerForKey("CheckListIndex")
-        if index != -1 {
+        let index = dataModel.indexOfSelectedCheckList
+        if index >= 0 && index < dataModel.lists.count {
             let checkList = dataModel.lists[index]
             performSegueWithIdentifier("ShowCheckList", sender: checkList)
         }
@@ -36,7 +36,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
         if viewController === self {
-            NSUserDefaults.standardUserDefaults().setInteger(-1, forKey: "CheckListIndex")
+            dataModel.indexOfSelectedCheckList = -1
         }
     }
 
@@ -66,8 +66,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        NSUserDefaults.standardUserDefaults().setInteger(indexPath.row, forKey: "CheckListIndex")
-        
+        dataModel.indexOfSelectedCheckList = indexPath.row
         let checkList = dataModel.lists[indexPath.row]
         performSegueWithIdentifier("ShowCheckList", sender: checkList)
     }
