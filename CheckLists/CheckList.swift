@@ -31,4 +31,8 @@ class CheckList: NSObject, NSCoding {
         aCoder.encodeInt32(self.id, forKey: "Id")
         aCoder.encodeObject(items, forKey: "Items")
     }
+    
+    func countUncheckedItems() -> Int {
+        return items.reduce(0, combine: {count, item in count + (item.checked ? 0 : 1)})
+    }
 }

@@ -14,6 +14,7 @@ class DataModel {
     init() {
         loadChecklists()
         registerDefaults()
+        handleFirstTime()
     }
     
     var indexOfSelectedCheckList: Int {
@@ -25,8 +26,19 @@ class DataModel {
         }
     }
     
+    func handleFirstTime() {
+        if NSUserDefaults.standardUserDefaults().boolForKey("FirstTime") {
+            let checkList = CheckList(name: "List")
+            checkList.id = 0
+            lists.append(checkList)
+            
+            indexOfSelectedCheckList = 0
+            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "FirstTime")
+        }
+    }
+    
     func registerDefaults() {
-        let dictionary = ["CheckListIndex": -1]
+        let dictionary = ["CheckListIndex": -1, "FirstTime": true]
         
         NSUserDefaults.standardUserDefaults().registerDefaults(dictionary)
     }
@@ -55,7 +67,13 @@ class DataModel {
                 let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
                 lists = unarchiver.decodeObjectForKey("Checklists") as! [CheckList]
                 unarchiver.finishDecoding()
+                
+                sortCheckLists()
             }
         }
+    }
+    
+    func sortCheckLists() {
+        lists.sortInPlace({checkList1, checkList2 in return checkList1.name.localizedStandardCompare(checkList2.name) == NSComparisonResult.OrderedAscending})
     }
 }
