@@ -72,6 +72,7 @@ class CheckListViewController: UITableViewController, ItemDetailViewControllerDe
     func configureTextForCell(cell: UITableViewCell, withCheckListItem checkListitem: CheckListItem) {
         let label = cell.viewWithTag(666) as! UILabel
         label.text = checkListitem.text
+        label.textColor = view.tintColor
     }
     
     func itemDetailViewControllerDidCancel(controller: ItemDetailViewController) {
