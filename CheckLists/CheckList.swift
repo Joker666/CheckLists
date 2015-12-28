@@ -10,7 +10,7 @@ import Foundation
 
 class CheckList: NSObject, NSCoding {
     var name = ""
-    var id : Int32 = 0
+    var listId = 0
     var iconName: String
     var items = [CheckListItem]()
     
@@ -27,7 +27,7 @@ class CheckList: NSObject, NSCoding {
     required init(coder aDecoder: NSCoder) {
         name = aDecoder.decodeObjectForKey("Name") as! String
         items = aDecoder.decodeObjectForKey("Items") as! [CheckListItem]
-        self.id = aDecoder.decodeInt32ForKey("Id")
+        listId = aDecoder.decodeIntegerForKey("ListId")
         iconName = aDecoder.decodeObjectForKey("IconName") as! String
         
         super.init()
@@ -35,7 +35,7 @@ class CheckList: NSObject, NSCoding {
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(name, forKey: "Name")
-        aCoder.encodeInt32(self.id, forKey: "Id")
+        aCoder.encodeInteger(listId, forKey: "ListId")
         aCoder.encodeObject(iconName, forKey: "IconName")
         aCoder.encodeObject(items, forKey: "Items")
     }

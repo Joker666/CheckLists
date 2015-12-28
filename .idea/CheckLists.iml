@@ -5,12 +5,12 @@
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/AllListsViewController.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/AppDelegate.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/Assets.xcassets" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CheckLists/Base.lproj/LaunchScreen.storyboard" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/Base.lproj/Main.storyboard" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/CheckList.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/CheckListItem.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/CheckListViewController.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/DataModel.swift" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CheckLists/IconPickerViewController.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/Info.plist" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/ItemDetailViewController.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CheckLists/ListDetailViewController.swift" isTestSource="false" />

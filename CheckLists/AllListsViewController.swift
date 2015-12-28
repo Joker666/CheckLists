@@ -107,7 +107,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     
     func listDetailViewController(controller: ListDetailViewController, didFinishAddingCheckList checkList: CheckList) {
         let newRowIndex = dataModel.lists.count
-        checkList.id = Int32(newRowIndex)
+        checkList.listId = newRowIndex
         dataModel.lists.append(checkList)
         dataModel.sortCheckLists()
         

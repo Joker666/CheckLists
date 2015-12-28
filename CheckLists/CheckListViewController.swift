@@ -71,7 +71,8 @@ class CheckListViewController: UITableViewController, ItemDetailViewControllerDe
 
     func configureTextForCell(cell: UITableViewCell, withCheckListItem checkListitem: CheckListItem) {
         let label = cell.viewWithTag(666) as! UILabel
-        label.text = checkListitem.text
+//        label.text = checkListitem.text
+        label.text = "\(checkListitem.itemId): \(checkListitem.text)"
         label.textColor = view.tintColor
     }
     
@@ -81,7 +82,7 @@ class CheckListViewController: UITableViewController, ItemDetailViewControllerDe
     
     func itemDetailViewController(controller: ItemDetailViewController, didFinishAddingItem item: CheckListItem) {
         let newRowIndex = checkList.items.count
-        item.id = Int32(newRowIndex)
+        item.itemId = newRowIndex
         checkList.items.append(item)
 
         let indexPath = NSIndexPath(forRow: newRowIndex, inSection: 0)
@@ -91,7 +92,7 @@ class CheckListViewController: UITableViewController, ItemDetailViewControllerDe
     }
     
     func itemDetailViewController(controller: ItemDetailViewController, didFinishEditingItem item: CheckListItem) {
-        if let index = checkList.items.indexOf({$0.id == item.id}) {
+        if let index = checkList.items.indexOf({$0.itemId == item.itemId}) {
             let indexPath = NSIndexPath(forRow: index, inSection: 0)
             if let cell = tableView.cellForRowAtIndexPath(indexPath) {
                 configureTextForCell(cell, withCheckListItem: item)

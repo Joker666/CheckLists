@@ -6,8 +6,10 @@
 import Foundation
 
 class CheckListItem : NSObject, NSCoding {
-    var id : Int32 = 0
+    var itemId = 0
     var text = ""
+    var shouldRemind = false
+    var dueDate = NSDate()
     var checked = false
 
     func toggleChecked() {
@@ -16,14 +18,18 @@ class CheckListItem : NSObject, NSCoding {
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(text, forKey: "Text")
-        aCoder.encodeInt32(self.id, forKey: "Id")
+        aCoder.encodeInteger(itemId, forKey: "ItemId")
         aCoder.encodeBool(checked, forKey: "Checked")
+        aCoder.encodeObject(dueDate, forKey: "DueDate")
+        aCoder.encodeBool(shouldRemind, forKey: "ShouldRemind")
     }
     
     required init(coder aDecoder: NSCoder) {
         text = aDecoder.decodeObjectForKey("Text") as! String
         checked = aDecoder.decodeBoolForKey("Checked")
-        self.id = aDecoder.decodeInt32ForKey("Id")
+        itemId = aDecoder.decodeIntegerForKey("ItemId")
+        dueDate = aDecoder.decodeObjectForKey("DueDate") as! NSDate
+        shouldRemind = aDecoder.decodeBoolForKey("ShouldRemind")
         super.init()
     }
     

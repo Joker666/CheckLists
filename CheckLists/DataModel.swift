@@ -23,13 +23,14 @@ class DataModel {
         }
         set {
             NSUserDefaults.standardUserDefaults().setInteger(newValue, forKey: "CheckListIndex")
+            NSUserDefaults.standardUserDefaults().synchronize()
         }
     }
     
     func handleFirstTime() {
         if NSUserDefaults.standardUserDefaults().boolForKey("FirstTime") {
             let checkList = CheckList(name: "List")
-            checkList.id = 0
+            checkList.listId = 0
             lists.append(checkList)
             
             indexOfSelectedCheckList = 0
