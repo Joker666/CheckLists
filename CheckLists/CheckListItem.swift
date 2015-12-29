@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import UIKit
 
 class CheckListItem : NSObject, NSCoding {
     var itemId = 0
@@ -35,5 +36,43 @@ class CheckListItem : NSObject, NSCoding {
     
     override init() {
         super.init()
+    }
+    
+    func scheduleNotification() {
+        if let notification = notificationForThisItem() {
+            UIApplication.sharedApplication().cancelLocalNotification(notification)
+        }
+        
+        
+        if shouldRemind && dueDate.compare(NSDate()) != NSComparisonResult.OrderedAscending {
+            let localNotification = UILocalNotification()
+            localNotification.fireDate = dueDate
+            localNotification.timeZone = NSTimeZone.defaultTimeZone()
+            localNotification.alertBody = text
+            localNotification.soundName = UILocalNotificationDefaultSoundName
+            localNotification.userInfo = ["ItemId": itemId]
+            
+            UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
+        }
+    }
+    
+    func notificationForThisItem() -> UILocalNotification? {
+        let allNotifications = UIApplication.sharedApplication().scheduledLocalNotifications! as [UILocalNotification]
+        
+        for notification in allNotifications {
+            if let number = notification.userInfo?["ItemId"] as? NSNumber {
+                if number.integerValue == itemId {
+                    return notification
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    deinit {
+        if let notification = notificationForThisItem() {
+            UIApplication.sharedApplication().cancelLocalNotification(notification)
+        }
     }
 }
